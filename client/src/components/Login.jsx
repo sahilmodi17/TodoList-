@@ -12,24 +12,8 @@ const Login = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     const temp = { email, password };
-/*
-    axios
-      .post("http://localhost:8000/api/v1/login", temp)
-      .then((res) => {
-        // console.log(res);
 
-        // if (res.status === 200) {
-        // }
-        // else{
-        //   console.log(res)
-        // }
-        nav("/todoform");
-      })
-      .catch((err) => {
-        if (err) {
-        }
-      });
-      */
+  
       try{
         const { data : res } = await axios.post("http://localhost:8000/api/v1/login", temp);
         // console.log(res);

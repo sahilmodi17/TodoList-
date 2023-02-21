@@ -8,20 +8,18 @@ const TodoForm = () => {
   const [task, setTask] = useState("");
   const [taskid, setTaskid] = useState("");
   const [todos, setTodos] = useState([]);
+  const [valid , setValid] = useState(false);
 
   const onFormSubmit = (e) => {
     // add todo api
     e.preventDefault();
 
-    const temp = { task, taskid };
-    console.log(temp);
-    const token = "";
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
+   
     axios
       .post("http://localhost:8000/api/v1/create", temp, config)
-      .then((res) => console.log(res))
+      .then((res) => {console.log(res)}
+      
+      )
       .catch((err) => console.log(err));
   };
 
@@ -43,7 +41,7 @@ const TodoForm = () => {
           onChange={(e) => setTaskid(e.target.value)}
         />
 
-        <button type="submit" onClick={onFormSubmit}>
+        <button className="btn" type="submit" onClick={onFormSubmit}>
           submit
         </button>
 

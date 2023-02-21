@@ -17,10 +17,11 @@ const Login = () => {
     const temp = { name, email, password };
 
     axios
-      .post("http://localhost:8000/api/v1/register", temp)
+      .post("/api/v1/auth/register", temp)
       .then((res) => {
         console.log(res);
-        nav("/todoform");
+        // nav("/todoform");
+        nav("/protected");
       })
       .catch((error) => {
         const err = error.response;

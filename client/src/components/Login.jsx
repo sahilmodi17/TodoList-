@@ -5,30 +5,28 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error,setError] = useState("")
+  const [error, setError] = useState("");
   const nav = useNavigate();
-
 
   const onSubmit = async (e) => {
     e.preventDefault();
     const temp = { email, password };
 
-  
-      try{
-        const { data : res } = await axios.post("http://localhost:8000/api/v1/login", temp);
-        // console.log(res);
+    axios
+      .post("/api/v1/auth/login", temp)
+      .then((res) => {
+        console.log(res);
         nav("/todoform");
-      }
-      catch(error){
+      })
+      .catch((error) => {
         const err = error.response;
-
-        if(err && err.status === 400 ){
-          setError(err.data.msg)
-        }
-        else{
+        if (err && err.status === 400) {
+          setError(err.data.msg);
+        } else {
           setError(error.response.data.error);
+          console.log(error);
         }
-      }
+      });
   };
 
   return (
@@ -76,7 +74,7 @@ const Login = () => {
                 </div>
               </div>
             </form>
-            <p className="mt-8 text-xs font-light text-center text-gray-700 ">
+            <div className="mt-8 text-xs font-light text-center text-gray-700 ">
               {" "}
               Don't have an account?{" "}
               <Link
@@ -85,10 +83,8 @@ const Login = () => {
               >
                 Register
               </Link>
-              <div>
-                {(error && <div>{error}</div>)}
-              </div>
-            </p>
+              <div>{error && <div>{error}</div>}</div>
+            </div>
           </div>
         </div>
       </div>

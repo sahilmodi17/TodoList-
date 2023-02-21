@@ -10,17 +10,25 @@ const register = async (req, res) => {
     const dup_name = await User.findOne({ name: name });
 
     if (dup_email) {
-      res.status(400).send({msg : "user is already registerd"});
+      res.status(400).send({ msg: "user is already registerd" });
     } else if (dup_name) {
-      res.status(400).send({msg : "user name is not available"});
+      res.status(400).send({ msg: "user name is not available" });
     } else {
       if (name && password) {
         const user = await User.create(req.body);
+
+        const token = user.createToken();
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          expires: new Date(Date.now() + 6000000),
+        });
+
         res.status(200).json({ msg: "registerd successfully", user });
       } else {
         res.status(400).send({ msg: "please provide credentials " });
       }
-    } 
+    }
   } catch (error) {
     // checking validation
     if (error.name === "ValidationError") {
@@ -33,20 +41,16 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => { 
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if(!password){
-      return res.status(400).send({msg : "Please provide password"})
+    if (!password) {
+      return res.status(400).send({ msg: "Please provide password" });
     }
-    
-
-    
 
     const user = await User.findOne({ email: email });
-    
-    if (user) {
 
+    if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
@@ -54,10 +58,17 @@ const login = async (req, res) => {
       } else {
         const token = user.createToken();
         // here you have to send cookie to the frontend
-        res.status(200).send({ user : {name : user.name, token: token}});
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          expires: new Date(Date.now() + 600000),
+        });
+        res.status(200).send({ user: { name: user.name, token: token } });
       }
     } else {
-      return res.status(400).send({ msg: "user does not exists please register " });
+      return res
+        .status(400)
+        .send({ msg: "user does not exists please register " });
     }
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -72,6 +83,5 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   res.status(200).send("logout");
 };
-
 
 module.exports = { login, register, logout };
